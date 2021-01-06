@@ -21,19 +21,19 @@ import com.minzheng.blog.utils.UserUtil;
 import com.minzheng.blog.vo.ArticleVO;
 import com.minzheng.blog.vo.ConditionVO;
 import com.minzheng.blog.vo.DeleteVO;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
+//import org.elasticsearch.action.search.SearchResponse;
+//import org.elasticsearch.index.query.BoolQueryBuilder;
+//import org.elasticsearch.index.query.QueryBuilders;
+//import org.elasticsearch.search.SearchHit;
+//import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+//import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.SearchResultMapper;
-import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
-import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+//import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+//import org.springframework.data.elasticsearch.core.SearchResultMapper;
+//import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
+//import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
+//import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,12 +53,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     private CategoryDao categoryDao;
     @Autowired
     private TagDao tagDao;
-    @Autowired
-    private ElasticsearchDao elasticsearchDao;
+//    @Autowired
+//    private ElasticsearchDao elasticsearchDao;
     @Autowired
     private ArticleTagDao articleTagDao;
-    @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+//    @Autowired
+//    private ElasticsearchTemplate elasticsearchTemplate;
     @Autowired
     private HttpSession session;
     @Autowired
@@ -247,10 +247,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
 
 
 
-    @Override
-    public List<ArticleSearchDTO> listArticlesBySearch(ConditionVO condition) {
-        return searchArticle(buildQuery(condition));
-    }
+//    @Override
+//    public List<ArticleSearchDTO> listArticlesBySearch(ConditionVO condition) {
+//        return searchArticle(buildQuery(condition));
+//    }
 
     @Override
     public ArticleVO getArticleBackById(Integer articleId) {
@@ -276,64 +276,64 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
      * @param condition 条件
      * @return es条件构造器
      */
-    private NativeSearchQueryBuilder buildQuery(ConditionVO condition) {
-        //条件构造器
-        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
-        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        //根据关键词搜索文章标题或内容
-        if (condition.getKeywords() != null) {
-            boolQueryBuilder.must(QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("articleTitle", condition.getKeywords()))
-                    .should(QueryBuilders.matchQuery("articleContent", condition.getKeywords())))
-                    .must(QueryBuilders.termQuery("isDelete", DeleteConst.NORMAL));
-        }
-        //查询
-        nativeSearchQueryBuilder.withQuery(boolQueryBuilder);
-        return nativeSearchQueryBuilder;
-    }
-
+//    private NativeSearchQueryBuilder buildQuery(ConditionVO condition) {
+//        条件构造器
+//        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+//        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+//        根据关键词搜索文章标题或内容
+//        if (condition.getKeywords() != null) {
+//            boolQueryBuilder.must(QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("articleTitle", condition.getKeywords()))
+//                    .should(QueryBuilders.matchQuery("articleContent", condition.getKeywords())))
+//                    .must(QueryBuilders.termQuery("isDelete", DeleteConst.NORMAL));
+//        }
+//        查询
+//        nativeSearchQueryBuilder.withQuery(boolQueryBuilder);
+//        return nativeSearchQueryBuilder;
+//    }
+//
     /**
      * 文章搜索结果高亮
      *
      * @param nativeSearchQueryBuilder es条件构造器
      * @return 搜索结果
      */
-    private List<ArticleSearchDTO> searchArticle(NativeSearchQueryBuilder nativeSearchQueryBuilder) {
-        //添加文章标题高亮
-        HighlightBuilder.Field titleField = new HighlightBuilder.Field("articleTitle");
-        titleField.preTags("<span style='color:#f47466'>");
-        titleField.postTags("</span>");
-        //添加文章内容高亮
-        HighlightBuilder.Field contentField = new HighlightBuilder.Field("articleContent");
-        contentField.preTags("<span style='color:#f47466'>");
-        contentField.postTags("</span>");
-        contentField.fragmentSize(200);
-        nativeSearchQueryBuilder.withHighlightFields(titleField, contentField);
-        //搜索
-        AggregatedPage<ArticleSearchDTO> page = elasticsearchTemplate.queryForPage(nativeSearchQueryBuilder.build(), ArticleSearchDTO.class, new SearchResultMapper() {
-            @Override
-            public <T> AggregatedPage<T> mapResults(SearchResponse response, Class<T> aClass, Pageable pageable) {
-                List list = new ArrayList();
-                for (SearchHit hit : response.getHits()) {
-                    //获取所有数据
-                    ArticleSearchDTO article = JSON.parseObject(hit.getSourceAsString(), ArticleSearchDTO.class);
-                    //获取文章标题高亮数据
-                    HighlightField titleField = hit.getHighlightFields().get("articleTitle");
-                    if (titleField != null && titleField.getFragments() != null) {
-                        //替换标题数据
-                        article.setArticleTitle(titleField.getFragments()[0].toString());
-                    }
-                    //获取文章内容高亮数据
-                    HighlightField contentField = hit.getHighlightFields().get("articleContent");
-                    if (contentField != null && contentField.getFragments() != null) {
-                        //替换内容数据
-                        article.setArticleContent(contentField.getFragments()[0].toString());
-                    }
-                    list.add(article);
-                }
-                return new AggregatedPageImpl<T>(list, pageable, response.getHits().getTotalHits());
-            }
-        });
-        return page.getContent();
-    }
+//    private List<ArticleSearchDTO> searchArticle(NativeSearchQueryBuilder nativeSearchQueryBuilder) {
+//        //添加文章标题高亮
+//        HighlightBuilder.Field titleField = new HighlightBuilder.Field("articleTitle");
+//        titleField.preTags("<span style='color:#f47466'>");
+//        titleField.postTags("</span>");
+//        //添加文章内容高亮
+//        HighlightBuilder.Field contentField = new HighlightBuilder.Field("articleContent");
+//        contentField.preTags("<span style='color:#f47466'>");
+//        contentField.postTags("</span>");
+//        contentField.fragmentSize(200);
+//        nativeSearchQueryBuilder.withHighlightFields(titleField, contentField);
+//        //搜索
+//        AggregatedPage<ArticleSearchDTO> page = elasticsearchTemplate.queryForPage(nativeSearchQueryBuilder.build(), ArticleSearchDTO.class, new SearchResultMapper() {
+//            @Override
+//            public <T> AggregatedPage<T> mapResults(SearchResponse response, Class<T> aClass, Pageable pageable) {
+//                List list = new ArrayList();
+//                for (SearchHit hit : response.getHits()) {
+//                    //获取所有数据
+//                    ArticleSearchDTO article = JSON.parseObject(hit.getSourceAsString(), ArticleSearchDTO.class);
+//                    //获取文章标题高亮数据
+//                    HighlightField titleField = hit.getHighlightFields().get("articleTitle");
+//                    if (titleField != null && titleField.getFragments() != null) {
+//                        //替换标题数据
+//                        article.setArticleTitle(titleField.getFragments()[0].toString());
+//                    }
+//                    //获取文章内容高亮数据
+//                    HighlightField contentField = hit.getHighlightFields().get("articleContent");
+//                    if (contentField != null && contentField.getFragments() != null) {
+//                        //替换内容数据
+//                        article.setArticleContent(contentField.getFragments()[0].toString());
+//                    }
+//                    list.add(article);
+//                }
+//                return new AggregatedPageImpl<T>(list, pageable, response.getHits().getTotalHits());
+//            }
+//        });
+//        return page.getContent();
+//    }
 
 }

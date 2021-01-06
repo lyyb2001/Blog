@@ -104,11 +104,11 @@ public class ArticleController {
         return new Result(true, StatusConst.OK, "查询成功", articleService.getArticleById(articleId));
     }
 
-    @ApiOperation(value = "搜索文章")
-    @GetMapping("/articles/search")
-    private Result<List<ArticleSearchDTO>> listArticlesBySearch(ConditionVO condition) {
-        return new Result(true, StatusConst.OK, "查询成功", articleService.listArticlesBySearch(condition));
-    }
+//    @ApiOperation(value = "搜索文章")
+//    @GetMapping("/articles/search")
+//    private Result<List<ArticleSearchDTO>> listArticlesBySearch(ConditionVO condition) {
+//        return new Result(true, StatusConst.OK, "查询成功", articleService.listArticlesBySearch(condition));
+//    }
 
     @ApiOperation(value = "点赞文章")
     @ApiImplicitParam(name = "articleId", value = "文章id", required = true, dataType = "Integer")
