@@ -126,7 +126,6 @@ export default {
             Cookies.remove("password");
             Cookies.remove("rememberMe");
           }
-          console.log(this.loginForm)
           this.$store
             .dispatch("Login", this.loginForm)
             .then(() => {
