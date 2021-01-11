@@ -14,11 +14,11 @@
           auto-complete="off"
           placeholder="账号"
         >
-          <svg-icon
-            slot="prefix"
-            icon-class="user"
-            class="el-input__icon input-icon"
-          />
+<!--          <svg-icon-->
+<!--            slot="prefix"-->
+<!--            icon-class="user"-->
+<!--            class="el-input__icon input-icon"-->
+<!--          />-->
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
@@ -29,11 +29,11 @@
           placeholder="密码"
           @keyup.enter.native="handleLogin"
         >
-          <el-icon
-            slot="prefix"
-            icon-class="password"
-            class="el-input__icon input-icon"
-          />
+<!--          <el-icon-->
+<!--            slot="prefix"-->
+<!--            icon-class="password"-->
+<!--            class="el-input__icon input-icon"-->
+<!--          />-->
         </el-input>
       </el-form-item>
       <el-checkbox
@@ -62,7 +62,6 @@
 </template>
 
 <script>
-// import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from "@/utils/jsencrypt";
 
@@ -73,11 +72,9 @@ export default {
       codeUrl: "",
       cookiePassword: "",
       loginForm: {
-        username: "admin",
-        password: "admin123",
-        rememberMe: false,
-        code: "",
-        uuid: ""
+        username: "admin@qq.com",
+        password: "1234567",
+        rememberMe: false
       },
       loginRules: {
         username: [
@@ -85,8 +82,7 @@ export default {
         ],
         password: [
           { required: true, trigger: "blur", message: "密码不能为空" }
-        ],
-        code: [{ required: true, trigger: "change", message: "验证码不能为空" }]
+        ]
       },
       loading: false,
       redirect: undefined
@@ -101,16 +97,9 @@ export default {
     }
   },
   created() {
-    // this.getCode();
     this.getCookie();
   },
   methods: {
-    // getCode() {
-    //   getCodeImg().then(res => {
-    //     this.codeUrl = "data:image/gif;base64," + res.img;
-    //     this.loginForm.uuid = res.uuid;
-    //   });
-    // },
     getCookie() {
       const username = Cookies.get("username");
       const password = Cookies.get("password");
@@ -137,6 +126,7 @@ export default {
             Cookies.remove("password");
             Cookies.remove("rememberMe");
           }
+          console.log(this.loginForm)
           this.$store
             .dispatch("Login", this.loginForm)
             .then(() => {
