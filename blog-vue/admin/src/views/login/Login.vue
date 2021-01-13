@@ -72,7 +72,7 @@ export default {
       codeUrl: "",
       cookiePassword: "",
       loginForm: {
-        username: "admin@qq.com",
+        username: "admin",
         password: "1234567",
         rememberMe: false
       },
@@ -129,7 +129,7 @@ export default {
           this.$store
             .dispatch("Login", this.loginForm)
             .then(() => {
-              // this.$router.push({ path: this.redirect || "/" }).catch(() => {});
+              this.$router.push({ path: this.redirect || "/" }).catch(() => {});
             })
             .catch(() => {
               this.loading = false;

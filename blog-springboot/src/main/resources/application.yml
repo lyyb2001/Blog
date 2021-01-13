@@ -86,4 +86,5 @@ aliyun:
   accessKeySecret: "阿里云accessKeySecret"
   bucketName: "阿里云bucket名"
 
-
+token:
+  header: Authorization

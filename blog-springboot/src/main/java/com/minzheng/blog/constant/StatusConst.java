@@ -9,11 +9,11 @@ public class StatusConst {
     /**
      * 成功
      */
-    public static final int OK = 20000;
+    public static final int OK = 200;
 
     /**
      * 失败
      */
-    public static final int ERROR = 20001;
+    public static final int ERROR = 201;
 
 }
