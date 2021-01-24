@@ -88,3 +88,5 @@ aliyun:
 
 token:
   header: Authorization
+  secret: asdf
+  expireTime: 1000000

@@ -34,8 +34,8 @@ public class TokenService{
 
     private static final Long MILLIS_MINUTE_TEN = 1 * 60 * 1000L;           //小于这个时间的时候刷新token
 
-    @Autowired
-    private RedisCache redisCache;
+//    @Autowired
+//    private RedisCache redisCache;
 
     /**
      * 获取用户身份信息
